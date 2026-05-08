@@ -1,0 +1,189 @@
+<section class="page">
+  <div class="page-title">
+    <h1>Admin</h1>
+    <p>Add airlines and airports, and manage flights, users, staff, and bookings.</p>
+  </div>
+
+  <p *ngIf="!isAdmin" class="alert error">
+    Your current role is {{ role || 'unknown' }}. This interface is only for ADMIN users.
+  </p>
+
+  <div class="card section" *ngIf="isAdmin">
+    <div class="tabs">
+      <button class="btn small" type="button" [class.primary]="tab === 'dashboard'" [class.ghost]="tab !== 'dashboard'" (click)="openDashboard()">Dashboard</button>
+      <button class="btn small" type="button" [class.primary]="tab === 'airline'" [class.ghost]="tab !== 'airline'" (click)="openAirline()">Add Airline</button>
+      <button class="btn small" type="button" [class.primary]="tab === 'airport'" [class.ghost]="tab !== 'airport'" (click)="openAirport()">Add Airport</button>
+      <button class="btn small" type="button" [class.primary]="tab === 'airlines'" [class.ghost]="tab !== 'airlines'" (click)="openAirlines()">Airlines</button>
+      <button class="btn small" type="button" [class.primary]="tab === 'airports'" [class.ghost]="tab !== 'airports'" (click)="openAirports()">Airports</button>
+      <button class="btn small" type="button" [class.primary]="tab === 'flights'" [class.ghost]="tab !== 'flights'" (click)="openFlights()">Flights</button>
+      <button class="btn small" type="button" [class.primary]="tab === 'users'" [class.ghost]="tab !== 'users'" (click)="openUsers()">Users</button>
+      <button class="btn small" type="button" [class.primary]="tab === 'staff'" [class.ghost]="tab !== 'staff'" (click)="openStaff()">Staff</button>
+      <button class="btn small" type="button" [class.primary]="tab === 'bookings'" [class.ghost]="tab !== 'bookings'" (click)="openBookings()">Bookings</button>
+    </div>
+  </div>
+
+  <section *ngIf="isAdmin && tab === 'dashboard'" class="dashboard section">
+    <div class="dashboard-hero">
+      <h2>Hello, {{ adminName }}</h2>
+      <p>Welcome to your admin dashboard.</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <article class="dash-card" (click)="openUsers()">
+        <div class="dash-icon users" aria-label="Users" title="Users">👤</div>
+        <div>
+          <h4>{{ totalUsers }}</h4>
+          <p>Total Users</p>
+        </div>
+      </article>
+      <article class="dash-card" (click)="openStaff()">
+        <div class="dash-icon staff" aria-label="Staff" title="Staff">🧑‍💼</div>
+        <div>
+          <h4>{{ totalStaff }}</h4>
+          <p>Total Staff</p>
+        </div>
+      </article>
+      <article class="dash-card" (click)="openFlights()">
+        <div class="dash-icon flights" aria-label="Flights" title="Flights">✈️</div>
+        <div>
+          <h4>{{ flights.length }}</h4>
+          <p>Total Flights</p>
+        </div>
+      </article>
+      <article class="dash-card" (click)="openAirports()">
+        <div class="dash-icon airports" aria-label="Airports" title="Airports">🛬</div>
+        <div>
+          <h4>{{ airportsCount }}</h4>
+          <p>Total Airports</p>
+        </div>
+      </article>
+      <article class="dash-card" (click)="openAirlines()">
+        <div class="dash-icon airlines" aria-label="Airlines" title="Airlines">🏢</div>
+        <div>
+          <h4>{{ totalAirlines }}</h4>
+          <p>Total Airlines</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <form *ngIf="isAdmin && tab === 'airline'" class="card section" (ngSubmit)="createAirline()">
+    <h3>Add airline</h3>
+    <div class="grid three section">
+      <div><label for="airlineName">Name</label><input id="airlineName" type="text" name="airlineName" [(ngModel)]="airline.name" required /></div>
+      <div><label for="airlineIata">IATA code</label><input id="airlineIata" type="text" name="airlineIata" [(ngModel)]="airline.iataCode" maxlength="3" required /></div>
+      <div><label for="airlineIcao">ICAO code</label><input id="airlineIcao" type="text" name="airlineIcao" [(ngModel)]="airline.icaoCode" maxlength="4" required /></div>
+      <div><label for="airlineCountry">Country</label><input id="airlineCountry" type="text" name="airlineCountry" [(ngModel)]="airline.country" required /></div>
+      <div><label for="airlineEmail">Contact email</label><input id="airlineEmail" type="email" name="airlineEmail" [(ngModel)]="airline.contactEmail" required /></div>
+      <div><label for="airlinePhone">Contact phone</label><input id="airlinePhone" type="text" name="airlinePhone" [(ngModel)]="airline.contactPhone" required /></div>
+      <div><label for="airlineLogo">Logo URL</label><input id="airlineLogo" type="text" name="airlineLogo" [(ngModel)]="airline.logoUrl" /></div>
+    </div>
+    <button class="btn primary section" type="submit" [disabled]="loading">{{ loading ? 'Adding...' : 'Add airline' }}</button>
+  </form>
+
+  <section *ngIf="isAdmin && tab === 'airlines'" class="card section table-wrap">
+    <h3>All airlines</h3>
+    <table>
+      <thead><tr><th>Name</th><th>IATA</th><th>ICAO</th><th>Country</th><th>Email</th><th>Phone</th><th>Active</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let a of airlines">
+          <td>{{ a.name }}</td><td>{{ a.iataCode }}</td><td>{{ a.icaoCode }}</td><td>{{ a.country }}</td><td>{{ a.contactEmail }}</td><td>{{ a.contactPhone }}</td><td>{{ a.isActive ? 'Yes' : 'No' }}</td>
+        </tr>
+        <tr *ngIf="airlines.length === 0"><td colspan="7" class="muted">No airlines found.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <form *ngIf="isAdmin && tab === 'airport'" class="card section" (ngSubmit)="createAirport()">
+    <h3>Add airport</h3>
+    <div class="grid three section">
+      <div><label for="airportName">Name</label><input id="airportName" type="text" name="airportName" [(ngModel)]="airport.name" required /></div>
+      <div><label for="airportIata">IATA code</label><input id="airportIata" type="text" name="airportIata" [(ngModel)]="airport.iataCode" maxlength="3" required /></div>
+      <div><label for="airportIcao">ICAO code</label><input id="airportIcao" type="text" name="airportIcao" [(ngModel)]="airport.icaoCode" maxlength="4" required /></div>
+      <div><label for="airportCity">City</label><input id="airportCity" type="text" name="airportCity" [(ngModel)]="airport.city" required /></div>
+      <div><label for="airportCountry">Country</label><input id="airportCountry" type="text" name="airportCountry" [(ngModel)]="airport.country" required /></div>
+      <div><label for="airportTimezone">Timezone</label><input id="airportTimezone" type="text" name="airportTimezone" [(ngModel)]="airport.timezone" required /></div>
+      <div><label for="airportLatitude">Latitude</label><input id="airportLatitude" type="number" name="airportLatitude" [(ngModel)]="airport.latitude" step="0.000001" required /></div>
+      <div><label for="airportLongitude">Longitude</label><input id="airportLongitude" type="number" name="airportLongitude" [(ngModel)]="airport.longitude" step="0.000001" required /></div>
+    </div>
+    <button class="btn primary section" type="submit" [disabled]="loading">{{ loading ? 'Adding...' : 'Add airport' }}</button>
+  </form>
+
+  <section *ngIf="isAdmin && tab === 'airports'" class="card section table-wrap">
+    <h3>All airports</h3>
+    <table>
+      <thead><tr><th>Name</th><th>IATA</th><th>ICAO</th><th>City</th><th>Country</th><th>Timezone</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let a of airports">
+          <td>{{ a.name }}</td><td>{{ a.iataCode }}</td><td>{{ a.icaoCode }}</td><td>{{ a.city }}</td><td>{{ a.country }}</td><td>{{ a.timezone }}</td>
+        </tr>
+        <tr *ngIf="airports.length === 0"><td colspan="6" class="muted">No airports found.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section *ngIf="isAdmin && tab === 'flights'" class="card section table-wrap">
+    <h3>Flights</h3>
+    <table>
+      <thead><tr><th>No.</th><th>From</th><th>To</th><th>Departure</th><th>Arrival</th><th>Duration</th><th>Status</th><th>Seats</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let flight of flights">
+          <td><strong>{{ flight.flightNumber }}</strong></td>
+          <td>{{ flight.originAirportCode }}</td>
+          <td>{{ flight.destinationAirportCode }}</td>
+          <td>{{ flight.departureTime | date:'medium' }}</td>
+          <td>{{ flight.arrivalTime | date:'medium' }}</td>
+          <td>{{ (flight.durationMinutes / 60) | number:'1.2-2' }} hrs</td>
+          <td>{{ flight.status }}</td>
+          <td>{{ flight.availableSeats }}/{{ flight.totalSeats }}</td>
+          <td class="actions-cell">
+            <button class="btn small ghost" type="button" (click)="startFlightEdit(flight)">Edit</button>
+            <button class="btn small danger" type="button" (click)="deleteFlight(flight.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section *ngIf="isAdmin && (tab === 'users' || tab === 'staff')" class="card section table-wrap">
+    <h3>{{ tab === 'users' ? 'Passenger users' : 'Staff users' }}</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Role</th><th>Nationality</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let user of visibleUsers">
+          <td>{{ user.userId }}</td><td>{{ user.fullName }}</td><td>{{ user.email }}</td><td>{{ user.phone }}</td><td>{{ user.role }}</td><td>{{ user.nationality }}</td>
+          <td class="actions-cell"><button class="btn small ghost" type="button" (click)="startUserEdit(user)">Edit</button><button class="btn small danger" type="button" (click)="deleteUser(user.userId)">Delete</button></td>
+        </tr>
+        <tr *ngIf="visibleUsers.length === 0"><td colspan="7" class="muted">No records loaded.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section *ngIf="isAdmin && tab === 'bookings'" class="card section table-wrap">
+    <h3>All bookings</h3>
+    <table>
+      <thead><tr><th>PNR</th><th>Booking ID</th><th>User Name</th><th>User ID</th><th>Flight Name</th><th>Flight Time</th><th>Total</th><th>Seat</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let booking of bookings">
+          <td><strong>{{ booking.pnrCode }}</strong></td>
+          <td>{{ booking.bookingId }}</td>
+          <td>{{ getUserNameByBooking(booking) }}</td>
+          <td>{{ getBookingUserId(booking) || '-' }}</td>
+          <td>{{ getFlightNameByBooking(booking) }}</td>
+          <td>{{ getFlightTimeByBooking(booking) }}</td>
+          <td>{{ booking.totalFare | currency:'INR' }}</td>
+          <td>{{ booking.seatNumber || '-' }}</td>
+          <td class="actions-cell">
+            <button class="btn small danger" type="button" (click)="deleteBooking(booking.bookingId)">Delete</button>
+            <button class="btn small primary" type="button" *ngIf="canResolveRefund(booking)" (click)="approveRefund(booking.bookingId)">Approve Refund</button>
+            <button class="btn small ghost" type="button" *ngIf="canResolveRefund(booking)" (click)="rejectRefund(booking.bookingId)">Reject Refund</button>
+          </td>
+        </tr>
+        <tr *ngIf="bookings.length === 0"><td colspan="9" class="muted">No bookings loaded.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <p *ngIf="message" class="alert success">{{ message }}</p>
+  <p *ngIf="error" class="alert error">{{ error }}</p>
+</section>

@@ -1,0 +1,114 @@
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.dashboard-hero {
+  color: #f8fbff;
+  background: linear-gradient(105deg, #0b2a57, #1559a6 55%, #1c7ab8);
+  border: 1px solid #2d6fa6;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 14px;
+}
+
+.dashboard-hero h2 {
+  margin: 0;
+  font-size: 38px;
+}
+
+.dashboard-hero p {
+  margin: 8px 0 0;
+  opacity: 0.9;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.dash-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #1d426f;
+  background: linear-gradient(120deg, #122b4b, #1d4c8f);
+  color: #f2f7ff;
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.dash-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(10, 31, 57, 0.25);
+}
+
+.dash-card h4 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.dash-card p {
+  margin: 6px 0 0;
+  opacity: 0.9;
+}
+
+.dash-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.dash-icon.users { background: #314a75; }
+.dash-icon.staff { background: #4a3f75; }
+.dash-icon.flights { background: #2c5a78; }
+.dash-icon.airports { background: #2e6a5d; }
+.dash-icon.airlines { background: #705a2f; }
+
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-wrap th,
+.table-wrap td {
+  text-align: left;
+  padding: 12px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  vertical-align: middle;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.muted {
+  color: #6b7f9b;
+}
+
+@media (max-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: repeat(2, minmax(170px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-hero h2 {
+    font-size: 30px;
+  }
+}
